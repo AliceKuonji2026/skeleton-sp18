@@ -62,15 +62,15 @@ public class Planet {
         return yyNF;
     }
 
-    public void update(double dt ,double xxF,double yyF){
-        xxVel+=dt*(xxF/mass);
-        yyVel+=dt*(yyF/mass);
-        xxPos+=dt*xxVel;
-        yyPos+=dt*yyVel;
+    public void update(double dt, double xxF, double yyF) {
+        xxVel += dt * (xxF / mass);
+        yyVel += dt * (yyF / mass);
+        xxPos += dt * xxVel;
+        yyPos += dt * yyVel;
     }
 
-    public void draw(){
-        StdDraw.picture(xxPos,yyPos,"images/"+imgFileName);
+    public void draw() {
+        StdDraw.picture(xxPos, yyPos, "images/" + imgFileName);
     }
 
 }

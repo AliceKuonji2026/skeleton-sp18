@@ -48,3 +48,8 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 *.lnk
+
+# ── IDE 与构建产物（本地生成，不提交）──
+.idea/
+*.iml
+out/
