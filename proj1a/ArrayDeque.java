@@ -14,11 +14,11 @@ public class ArrayDeque<T> {
         item =(T[]) new Object[capacity];
     }
 
-    public int indexUpdate(int index, int change) {
+   private int indexUpdate(int index, int change) {
         return (change + index) % capacity;
     }
 
-    public void sizeUpdate() {
+    private void sizeUpdate() {
         capacity*=2;
         T[] tmp=item;
         item=(T[]) new Object[capacity];

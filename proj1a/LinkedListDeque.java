@@ -1,10 +1,8 @@
 public class LinkedListDeque<T> {
     private Node sentinel;
-    private Node first;
-    private Node last;
     private int size;
 
-    public class Node {
+    private class Node {
         public Node prev;
         public T item;
         public Node next;
@@ -14,30 +12,26 @@ public class LinkedListDeque<T> {
         sentinel = new Node();
         sentinel.prev = sentinel;
         sentinel.next = sentinel;
-        first=sentinel;
-        last=sentinel;
         size = 0;
     }
 
     public void addFirst(T item) {
         Node tmp = new Node();
         tmp.item = item;
+        tmp.next=sentinel.next;
+        tmp.prev=sentinel;
         sentinel.next = tmp;
-        tmp.prev = sentinel;
-        tmp.next = first;
-        first.prev = tmp;
-        first = tmp;
+        tmp.next.prev=tmp;
         size++;
     }
 
     public void addLast(T item) {
         Node tmp = new Node();
         tmp.item = item;
+        tmp.next=sentinel;
+        tmp.prev=sentinel.prev;
         sentinel.prev = tmp;
-        tmp.next = sentinel;
-        tmp.prev = last;
-        last.next = tmp;
-        last = tmp;
+        tmp.prev.next=tmp;
         size++;
     }
 
@@ -64,8 +58,8 @@ public class LinkedListDeque<T> {
         if(isEmpty()){
             return null;
         }
-        Node tmp=first;
-        sentinel.next=first.next;
+        Node tmp=sentinel.next;
+        sentinel.next=tmp.next;
         sentinel.next.prev=sentinel;
         size--;
         return tmp.item;
@@ -75,8 +69,8 @@ public class LinkedListDeque<T> {
         if(isEmpty()) {
             return null;
         }
-        Node tmp=last;
-        sentinel.prev=last.prev;
+        Node tmp=sentinel.prev;
+        sentinel.prev=tmp.prev;
         sentinel.prev.next=sentinel;
         size--;
         return tmp.item;
@@ -87,7 +81,7 @@ public class LinkedListDeque<T> {
             return null;
         }
         int i=0;
-        Node p=first;
+        Node p=sentinel.next;
         while(i!=index){
             p=p.next;
             i++;
@@ -95,7 +89,7 @@ public class LinkedListDeque<T> {
         return p.item;
     }
 
-    public T get_helper(Node p, int i){
+    private T get_helper(Node p, int i){
         if(i==0){
             return p.item;
         }else{
