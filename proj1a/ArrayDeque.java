@@ -14,8 +14,8 @@ public class ArrayDeque<T> {
         item =(T[]) new Object[capacity];
     }
 
-   private int indexUpdate(int index, int change) {
-        return (change + index) % capacity;
+    private int indexUpdate(int index, int change) {
+        return (change + index + capacity) % capacity;
     }
 
     private void sizeUpdate() {
@@ -24,6 +24,7 @@ public class ArrayDeque<T> {
         item=(T[]) new Object[capacity];
         System.arraycopy(tmp,first,item,first,size-first);
         System.arraycopy(tmp,0,item,size-first+1,first);
+        lastnext=first+size;
     }
 
     public void addFirst(T t) {
@@ -39,9 +40,8 @@ public class ArrayDeque<T> {
         if(size == capacity) {
             sizeUpdate();
         }
-        int index=indexUpdate(lastnext,1);
-        item[index]=t;
-        lastnext=index;
+        item[lastnext]=t;
+        lastnext= indexUpdate(lastnext,1);
         size++;
     }
     public boolean isEmpty() {
@@ -60,6 +60,7 @@ public class ArrayDeque<T> {
                     System.out.print(' ');
                 }
             }
+            System.out.print('\n');
         }
     }
     public T removeFirst(){

@@ -52,6 +52,7 @@ public class LinkedListDeque<T> {
             }
             p=p.next;
         }
+        System.out.print('\n');
     }
 
     public T removeFirst() {
