@@ -76,8 +76,8 @@ public class ArrayDeque<T> {
         if(isEmpty()){
             return null;
         }
-        T tmp=item[lastnext];
         lastnext=indexUpdate(lastnext,-1);
+        T tmp=item[lastnext];
         size--;
         return tmp;
     }
