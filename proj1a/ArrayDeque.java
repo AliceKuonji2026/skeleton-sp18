@@ -1,5 +1,3 @@
-import static java.lang.IO.print;
-
 public class ArrayDeque<T> {
     private int first;
     private int lastnext;
@@ -56,10 +54,10 @@ public class ArrayDeque<T> {
         if(!isEmpty()){
             int i=first;
             while(i!=lastnext){
-                print(item[i]);
+                System.out.print(item[i]);
                 i=indexUpdate(i,1);
                 if(i!=lastnext){
-                    print(' ');
+                    System.out.print(' ');
                 }
             }
         }

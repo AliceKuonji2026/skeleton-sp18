@@ -1,5 +1,3 @@
-import static java.lang.IO.print;
-
 public class LinkedListDeque<T> {
     private Node sentinel;
     private Node first;
@@ -54,9 +52,9 @@ public class LinkedListDeque<T> {
     public void printDeque() {
         Node p=sentinel.next;
         while(p!=sentinel){
-            print(p.item);
+            System.out.print(p.item);
             if(p.next!=sentinel){
-                print(' ');
+                System.out.print(' ');
             }
             p=p.next;
         }
