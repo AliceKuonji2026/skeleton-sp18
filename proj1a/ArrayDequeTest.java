@@ -1,4 +1,6 @@
-/** Performs some basic linked list tests. */
+/**
+ * Performs some basic linked list tests.
+ */
 public class ArrayDequeTest {
 
     /* Utility method for printing out empty checks. */
@@ -18,9 +20,10 @@ public class ArrayDequeTest {
         }
         return true;
     }
-    public static boolean checkValue(int expected,int actual){
-        if(expected!=actual) {
-            System.out.println("expected:"+expected+",but actual:"+actual);
+
+    public static boolean checkValue(int expected, int actual) {
+        if (expected != actual) {
+            System.out.println("expected:" + expected + ",but actual:" + actual);
             return false;
         }
         return true;
@@ -36,10 +39,12 @@ public class ArrayDequeTest {
         }
     }
 
-    /** Adds a few things to the list, checking isEmpty() and size() are correct,
+    /**
+     * Adds a few things to the list, checking isEmpty() and size() are correct,
      * finally printing the results.
-     *
-     * && is the "and" operation. */
+     * <p>
+     * && is the "and" operation.
+     */
     public static void addIsEmptySizeTest() {
         System.out.println("Running add/isEmpty/Size test.");
         ArrayDeque<String> lld1 = new ArrayDeque<String>();
@@ -65,7 +70,9 @@ public class ArrayDequeTest {
         printTestStatus(passed);
     }
 
-    /** Adds an item, then removes an item, and ensures that dll is empty afterwards. */
+    /**
+     * Adds an item, then removes an item, and ensures that dll is empty afterwards.
+     */
     public static void addRemoveTest() {
 
         System.out.println("Running add/remove test.");
@@ -88,14 +95,14 @@ public class ArrayDequeTest {
     public static void sizeUpdateValueTest() {
         System.out.println("Running sizeUpdate test.");
         ArrayDeque<Integer> l = new ArrayDeque<>();
-        int s=99;
-        for(int i=0;i<s;i++){
+        int s = 99;
+        for (int i = 0; i < s; i++) {
             l.addFirst(i);
         }
-        boolean passed = checkSize(s,l.size());
+        boolean passed = checkSize(s, l.size());
         l.printDeque();
         System.out.println();
-        for(int i=0;i<60;i++){
+        for (int i = 0; i < 60; i++) {
             l.removeFirst();
         }
         l.printDeque();
