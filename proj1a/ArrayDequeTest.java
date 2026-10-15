@@ -18,6 +18,13 @@ public class ArrayDequeTest {
         }
         return true;
     }
+    public static boolean checkValue(int expected,int actual){
+        if(expected!=actual) {
+            System.out.println("expected:"+expected+",but actual:"+actual);
+            return false;
+        }
+        return true;
+    }
 
     /* Prints a nice message based on whether a test passed.
      * The \n means newline. */
@@ -78,10 +85,25 @@ public class ArrayDequeTest {
         printTestStatus(passed);
     }
 
+    public static void sizeUpdateValueTest() {
+        System.out.println("Running sizeUpdate test.");
+        ArrayDeque<Integer> l = new ArrayDeque<>();
+        int s=99;
+        for(int i=0;i<s;i++){
+            l.addFirst(i);
+        }
+        boolean passed = checkSize(s,l.size());
+        System.out.println();
+        l.printDeque();
+        System.out.println();
+        printTestStatus(passed);
+    }
+
     public static void main(String[] args) {
         System.out.println("Running tests.\n");
         addIsEmptySizeTest();
         addRemoveTest();
+        sizeUpdateValueTest();
     }
 
 

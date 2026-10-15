@@ -23,7 +23,7 @@ public class ArrayDeque<T> {
         T[] tmp=item;
         item=(T[]) new Object[capacity];
         System.arraycopy(tmp,first,item,first,size-first);
-        System.arraycopy(tmp,0,item,size-first+1,first);
+        System.arraycopy(tmp,0,item,size,first);
         lastnext=first+size;
     }
 
