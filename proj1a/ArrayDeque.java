@@ -1,3 +1,5 @@
+import static java.lang.Math.max;
+
 public class ArrayDeque<T> {
     private int first;
     private int lastnext;
@@ -18,18 +20,30 @@ public class ArrayDeque<T> {
         return (change + index + capacity) % capacity;
     }
 
-    private void sizeUpdate() {
-        capacity*=2;
-        T[] tmp=item;
-        item=(T[]) new Object[capacity];
-        System.arraycopy(tmp,first,item,first,size-first);
-        System.arraycopy(tmp,0,item,size,first);
-        lastnext=first+size;
+    private void sizeUpdate(boolean expand) {
+        if(expand) {
+            capacity *= 2;
+            T[] tmp = item;
+            item = (T[]) new Object[capacity];
+            System.arraycopy(tmp, first, item, 0, size - first);
+            System.arraycopy(tmp, 0, item, size-first, first);
+            first=0;
+            lastnext = size%capacity;
+        }else{
+            T[] tmp = item;
+            item = (T[]) new Object[max((int) capacity/2,1)];
+            for(int i=first,count=0;count<size;i=indexUpdate(i,1),count++){
+                item[count]=tmp[i];
+            }
+            capacity/=2;
+            first=0;
+            lastnext=size%capacity;
+        }
     }
 
     public void addFirst(T t) {
         if (size == capacity) {
-            sizeUpdate();
+            sizeUpdate(true);
         }
         int index=indexUpdate(first,-1);
         item[index]=t;
@@ -38,7 +52,7 @@ public class ArrayDeque<T> {
     }
     public void addLast(T t){
         if(size == capacity) {
-            sizeUpdate();
+            sizeUpdate(true);
         }
         item[lastnext]=t;
         lastnext= indexUpdate(lastnext,1);
@@ -70,6 +84,9 @@ public class ArrayDeque<T> {
         T tmp=item[first];
         first=indexUpdate(first,1);
         size--;
+        if(size*2==capacity){
+            sizeUpdate(false);
+        }
         return tmp;
     }
     public T removeLast(){
@@ -79,6 +96,9 @@ public class ArrayDeque<T> {
         lastnext=indexUpdate(lastnext,-1);
         T tmp=item[lastnext];
         size--;
+        if(size*2==capacity){
+            sizeUpdate(false);
+        }
         return tmp;
     }
     public T get(int index){

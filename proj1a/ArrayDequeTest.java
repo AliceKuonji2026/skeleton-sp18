@@ -93,9 +93,12 @@ public class ArrayDequeTest {
             l.addFirst(i);
         }
         boolean passed = checkSize(s,l.size());
-        System.out.println();
         l.printDeque();
         System.out.println();
+        for(int i=0;i<60;i++){
+            l.removeFirst();
+        }
+        l.printDeque();
         printTestStatus(passed);
     }
 
