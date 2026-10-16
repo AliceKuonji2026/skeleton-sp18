@@ -12,14 +12,14 @@ public class TestArrayDequeGold {
             studentArrayDeque.addLast(x);
             arrayDequeSolution.addLast(x);
             Integer actual = studentArrayDeque.get(i);
-            assertEquals("addLast()&get():random int, expected " + x + ",but got " + actual, x, actual);
+            assertEquals("addLast() & get():random int, expected " + x + ",but got " + actual, x, actual);
         }
         for (int i = 0; i < 100; i++) {
             Integer actual = (int) StdRandom.uniform();
             studentArrayDeque.addFirst(actual);
             arrayDequeSolution.addFirst(actual);
             Integer expected = studentArrayDeque.get(0);
-            assertEquals("addFirst()&get():random int, expected " + actual + ",but got " + actual, expected, actual);
+            assertEquals("addFirst() & get(): random int, expected " + actual + ",but got " + actual, expected, actual);
         }
         for (int i = 0; i < 80; i++) {
             Integer expected = arrayDequeSolution.removeFirst();
@@ -29,14 +29,11 @@ public class TestArrayDequeGold {
         for (int i = 0; i < 20; i++) {
             Integer expected = arrayDequeSolution.removeLast();
             Integer actual = studentArrayDeque.removeLast();
-            assertEquals("removeLast():expected " + expected + " but got " + actual, expected, actual);
+            assertEquals("removeLast(): expected " + expected + " but got " + actual, expected, actual);
         }
         Integer expected = arrayDequeSolution.size();
         Integer actual = studentArrayDeque.size();
-        assertEquals("size(): expected " + expected + " but got " + actual, expected, actual);
-        actual = studentArrayDeque.size();
-        expected = 0;
-        assertEquals("size(),expected 0 , but got " + actual, expected, actual);
+        assertEquals("size(): expected " + expected + " , but got " + actual, expected, actual);
 
     }
 
