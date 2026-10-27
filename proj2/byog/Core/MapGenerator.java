@@ -31,7 +31,7 @@ public class MapGenerator {
     }
 
 
-    public void drawRooms() {
+    public void setRooms() {
         int ct=0;
         int maxsize = 10;
         int maxTempts=6*this.screenWidth*this.screenHeight/maxsize/maxsize;
@@ -39,7 +39,7 @@ public class MapGenerator {
         int h=5,w=5;
         while(ct<maxTempts) {
             if(checkSafePlace(p,h,w)) {
-                drawRectangleRoom(p, h, w);
+                setRectangleRoom(p, h, w);
             }
             // 生成 0 到 screenWidth - 1 之间的随机数
             p.x = RANDOM.nextInt(this.screenWidth);
@@ -54,7 +54,7 @@ public class MapGenerator {
     }
 
     /// draw s single rectangle room
-    public void drawRectangleRoom(Position p, int height, int width) {
+    public void setRectangleRoom(Position p, int height, int width) {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 if(i==0 || i==height-1  || j==0 || j==width-1) {
@@ -117,7 +117,7 @@ public class MapGenerator {
             int[] best;
             best = findBest(connected);
             if(best[0] != -1) {
-                drawHallway(roomList.get(best[0]),roomList.get(best[1]));
+                setHallway(roomList.get(best[0]),roomList.get(best[1]));
             }
             connected[best[1]] = true;
             ct++;
@@ -145,19 +145,19 @@ public class MapGenerator {
         return res;
     }
 
-    public void drawHallway(Room r1,Room r2) {
+    public void setHallway(Room r1, Room r2) {
         int x1=r1.getCenterX(),y1=r1.getCenterY();
         int x2=r2.getCenterX(),y2=r2.getCenterY();
         boolean horizontalFirst = RANDOM.nextBoolean();
         if(horizontalFirst) {
-            drawHorizontalLine(y1,x1,x2);
-            drawVerticalLine(x2,y1,y2);
+            setHorizontalLine(y1,x1,x2);
+            setVerticalLine(x2,y1,y2);
         } else {
-            drawVerticalLine(x1,y1,y2);
-            drawHorizontalLine(y2,x1,x2);
+            setVerticalLine(x1,y1,y2);
+            setHorizontalLine(y2,x1,x2);
         }
     }
-    private void drawVerticalLine(int x,int y1,int y2) {
+    private void setVerticalLine(int x, int y1, int y2) {
         int minY=Math.min(y1,y2),maxY=Math.max(y1,y2);
         for(int i=minY;i<=maxY;i++) {
             if(world[x][i]!=Tileset.GRASS) world[x][i] = Tileset.FLOOR;
@@ -169,7 +169,7 @@ public class MapGenerator {
             }
         }
     }
-    private void drawHorizontalLine(int y, int x1,int x2) {
+    private void setHorizontalLine(int y, int x1, int x2) {
         int minX=Math.min(x1,x2),maxX=Math.max(x1,x2);
         for(int i=minX;i<=maxX;i++) {
             if(world[i][y]!=Tileset.GRASS) world[i][y] = Tileset.FLOOR;

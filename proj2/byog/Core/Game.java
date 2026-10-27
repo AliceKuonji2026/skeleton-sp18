@@ -39,7 +39,8 @@ public class Game {
 
 
         while (!gameOver) {
-            drawWorld(world, input);
+            setWorld(world, input);
+            ter.renderFrame(world);
             drawUI(world);
 
             drawPlayer();
@@ -66,18 +67,38 @@ public class Game {
         // TODO: Fill out this method to run the game using the input passed in,
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
-        ter.initialize(WIDTH, HEIGHT);
+        input = input.toLowerCase();
+        boolean isNewGame = input.startsWith("n");
+        boolean isLoad = input.startsWith("l");
         TETile[][] world = new TETile[WIDTH][HEIGHT];
-        seed = input;
-        gameStart = true;
-        while (!gameOver) {
-            drawWorld(world, input);
-            drawUI(world);
 
-            drawPlayer();
-            checkKeyboard(world);
-            drawPlayer();
-            updateState();
+        if(isLoad) {
+            gameState = load();
+            seed = gameState.seed;
+            setWorld(world,seed);
+            p.x = gameState.playerX;
+            p.y = gameState.playerY;
+        }else if(isNewGame) {
+            int sIndex = input.indexOf('s');
+            if(sIndex == -1) { return null; }
+
+            seed = input.substring(1,sIndex);
+
+            setWorld(world,seed);
+            p.x = 0;
+            p.y = 0;
+            for(int i = sIndex + 1;i<input.length();i++) {
+                char c = input.charAt(i);
+                if(c == ':') {
+                    if(i+1<input.length() && input.charAt(i+1) == 'q') {
+                        save(gameState);
+                        break;
+                    }
+                }
+                else if(c=='w'||c=='a'||c=='s'||c=='d') {
+                    move(world,c);
+                }
+            }
         }
         return world;
     }
@@ -134,16 +155,15 @@ public class Game {
         StdDraw.show();
     }
 
-    private void drawWorld(TETile[][] world, String input) {
+    private void setWorld(TETile[][] world, String input) {
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {
                 world[x][y] = Tileset.NOTHING;
             }
         }
         MapGenerator m = new MapGenerator(world, WIDTH, HEIGHT, input);
-        m.drawRooms();
+        m.setRooms();
         m.connectRooms();
-        ter.renderFrame(world);
     }
 
     private void move(TETile[][] world, char c) {

@@ -3,7 +3,6 @@ package byog.Core;
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
-import byog.lab5.Position;
 
 public class TestMapGenerator {
     public static void main(String[] args) {
@@ -17,7 +16,7 @@ public class TestMapGenerator {
             }
         }
         MapGenerator m=new MapGenerator(world,width,height,"000000000");
-        m.drawRooms();
+        m.setRooms();
         m.connectRooms();
 
         ter.renderFrame(world);
