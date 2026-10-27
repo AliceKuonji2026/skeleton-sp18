@@ -21,6 +21,7 @@ public class Game {
     public boolean maybeQuit = false;
     public static GameState gameState = new GameState();
     public String seed;
+    private static GameState memorySave = null;
 
 
     /**
@@ -72,31 +73,32 @@ public class Game {
         boolean isLoad = input.startsWith("l");
         TETile[][] world = new TETile[WIDTH][HEIGHT];
 
-        if(isLoad) {
+        if (isLoad) {
             gameState = load();
             seed = gameState.seed;
-            setWorld(world,seed);
+            setWorld(world, seed);
             p.x = gameState.playerX;
             p.y = gameState.playerY;
-        }else if(isNewGame) {
+        } else if (isNewGame) {
             int sIndex = input.indexOf('s');
-            if(sIndex == -1) { return null; }
+            if (sIndex == -1) {
+                return null;
+            }
 
-            seed = input.substring(1,sIndex);
+            seed = input.substring(1, sIndex);
 
-            setWorld(world,seed);
+            setWorld(world, seed);
             p.x = 0;
             p.y = 0;
-            for(int i = sIndex + 1;i<input.length();i++) {
+            for (int i = sIndex + 1; i < input.length(); i++) {
                 char c = input.charAt(i);
-                if(c == ':') {
-                    if(i+1<input.length() && input.charAt(i+1) == 'q') {
+                if (c == ':') {
+                    if (i + 1 < input.length() && input.charAt(i + 1) == 'q') {
                         save(gameState);
                         break;
                     }
-                }
-                else if(c=='w'||c=='a'||c=='s'||c=='d') {
-                    move(world,c);
+                } else if (c == 'w' || c == 'a' || c == 's' || c == 'd') {
+                    move(world, c);
                 }
             }
         }
@@ -122,7 +124,7 @@ public class Game {
                 if (waitForSeed) {
                     if (c >= '0' && c <= '9') {
                         s.append(c);
-                    } else if (c == 's' && s.length()>0) {
+                    } else if (c == 's' && s.length() > 0) {
                         break;
                     } else {
                         s = new StringBuilder();
@@ -215,8 +217,9 @@ public class Game {
     }
 
     public void save(GameState state) {
-        File f = new File("./GameState.ser");
+        memorySave = state;
         try {
+            File f = new File("./GameState.ser");
             if (!f.exists()) {
                 f.createNewFile();
             }
@@ -232,11 +235,16 @@ public class Game {
         } catch (IOException e) {
             System.out.println(e);
             System.exit(0);
+        } catch (Exception e) {
+            //Do nothing
         }
     }
 
     private GameState load() {
         System.out.println("load");
+        if(memorySave != null) {
+            return memorySave;
+        }
         try {
             FileInputStream fi = new FileInputStream("./GameState.ser");
             ObjectInputStream oi = new ObjectInputStream(fi);
