@@ -41,10 +41,13 @@ public class MapGenerator {
             if(checkSafePlace(p,h,w)) {
                 drawRectangleRoom(p, h, w);
             }
-            p.x = RANDOM.nextInt(0,this.screenWidth);
-            p.y = RANDOM.nextInt(0,this.screenHeight);
-            w = RANDOM.nextInt(5,maxsize);
-            h = RANDOM.nextInt(4,maxsize);
+            // 生成 0 到 screenWidth - 1 之间的随机数
+            p.x = RANDOM.nextInt(this.screenWidth);
+            p.y = RANDOM.nextInt(this.screenHeight);
+            // 生成 5 到 maxsize - 1 之间的随机数（长度 = maxsize - 5）
+            w = RANDOM.nextInt(maxsize - 5) + 5;
+            // 生成 4 到 maxsize - 1 之间的随机数（长度 = maxsize - 4）
+            h = RANDOM.nextInt(maxsize - 4) + 4;
             ct++;
         }
 

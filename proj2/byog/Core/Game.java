@@ -101,7 +101,7 @@ public class Game {
                 if (waitForSeed) {
                     if (c >= '0' && c <= '9') {
                         s.append(c);
-                    } else if (c == 's' && !s.isEmpty()) {
+                    } else if (c == 's' && s.length()>0) {
                         break;
                     } else {
                         s = new StringBuilder();

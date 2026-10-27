@@ -1,8 +1,6 @@
 package byog.Core;
-import java.io.Serial;
 import java.io.Serializable;
 public class GameState implements Serializable{
-    @Serial
     private static final long serialVersionUID = 12323123123L;
     public  String seed;
     public int playerX = 0;
