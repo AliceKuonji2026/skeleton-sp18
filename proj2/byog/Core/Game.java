@@ -86,7 +86,7 @@ public class Game {
             }
 
             seed = input.substring(1, sIndex);
-
+            updateState();
             setWorld(world, seed);
             p.x = 0;
             p.y = 0;
@@ -94,6 +94,7 @@ public class Game {
                 char c = input.charAt(i);
                 if (c == ':') {
                     if (i + 1 < input.length() && input.charAt(i + 1) == 'q') {
+                        updateState();
                         save(gameState);
                         break;
                     }
