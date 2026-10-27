@@ -14,17 +14,15 @@ public class MapGenerator {
     private final long seed;
     private int screenWidth;
     private int screenHeight;
-    private int[][] diff;
+    private boolean[][] overlapping;
     private TETile[][] world;
-    private int[][] prefix;
     private static Random RANDOM = null;
     public List<Room> roomList;
 
     /// initialize the MapGenerator
     public MapGenerator(TETile[][] world, int screenWidth, int screenHeight, String s) {
         this.world = world;
-        this.diff = new int[screenWidth + 1][screenHeight + 1];
-        this.prefix = new int[screenWidth + 2][screenHeight + 2];
+        this.overlapping = new boolean[screenWidth][screenHeight];
         this.seed = Long.parseLong(s);
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
@@ -65,38 +63,15 @@ public class MapGenerator {
         }
         Room m =new Room(p.x,p.y,width,height);
         roomList.add(m);
-        int j1 = p.x, i1 = p.y, j2 = p.x + width - 1, i2 = p.y + height - 1;
-        System.out.println("Room at: i1=" + i1 + ", j1=" + j1 + ", i2=" + i2 + ", j2=" + j2);
+//        int j1 = p.x, i1 = p.y, j2 = p.x + width - 1, i2 = p.y + height - 1;
+//        System.out.println("Room at: i1=" + i1 + ", j1=" + j1 + ", i2=" + i2 + ", j2=" + j2);
 
-        updateDiff(p, height, width);
-        updatePrefixSum();
+        updateOverlapping(p,height,width);
     }
-
-    /// update prefix array for the check
-    private void updateDiff(Position p, int height, int width) {
-        int j1 = p.x, i1 = p.y, j2 = p.x + width - 1, i2 = p.y + height - 1;
-        diff[j1][i1]++;
-        diff[j1][i2 + 1]--;
-        diff[j2 + 1][i1]--;
-        diff[j2 + 1][i2 + 1]++;
-    }
-
-    /// calculate the prefix sum
-    private void updatePrefixSum() {
-        // 第一步：把 diff 还原成每个格子的占用情况 (M 矩阵)
-        int[][] m = new int[screenWidth][screenHeight];
-        for (int x = 0; x < screenWidth; x++) {
-            for (int y = 0; y < screenHeight; y++) {
-                m[x][y] = diff[x][y];
-                if (x > 0) m[x][y] += m[x - 1][y];
-                if (y > 0) m[x][y] += m[x][y - 1];
-                if (x > 0 && y > 0) m[x][y] -= m[x - 1][y - 1];
-            }
-        }
-        // 第二步：对 M 矩阵求真正的面积前缀和 (P 矩阵)
-        for (int x = 0; x < screenWidth; x++) {
-            for (int y = 0; y < screenHeight; y++) {
-                prefix[x + 1][y + 1] = m[x][y] + prefix[x][y + 1] + prefix[x + 1][y] - prefix[x][y];
+    private void updateOverlapping(Position p,int height,int width) {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                overlapping[x+p.x][y+p.y] = true;
             }
         }
     }
@@ -107,7 +82,12 @@ public class MapGenerator {
         if(!((0<=i1 && i1<screenHeight) && (0<=j1 && j1 < screenWidth)&& (0<=i2 && i2 < screenHeight)&& (0<=j2 && j2 < screenWidth))) {
             return false;
         }
-        return prefix[j2+1][i2+1] - prefix[j2+1][i1] - prefix[j1][i2+1] + prefix[j1][i1] == 0;
+        for(int x=0;x<width;x++) {
+            for(int y=0;y<height;y++) {
+                if(overlapping[x+p.x][y+p.y]) return false;
+            }
+        }
+        return true;
     }
 
     public class Room{
