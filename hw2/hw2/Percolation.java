@@ -72,7 +72,7 @@ public class Percolation {
         // is the site (row, col) full?
         checkBounds(row, col);
         if(grid[row][col] != 1) { return false;}
-        return ufFull.find(xyTo1D(row, col)) == n * n;
+        return ufFull.connected(xyTo1D(row, col),n*n);
     }
 
     public boolean percolates() {
