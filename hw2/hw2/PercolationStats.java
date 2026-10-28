@@ -8,7 +8,7 @@ public class PercolationStats {
 
     public PercolationStats(int N, int T, PercolationFactory pf) {
         // perform T independent experiments on an N-by-N grid
-        if(N<0 || T<0) {
+        if(N<=0 || T<=0) {
             throw new IllegalArgumentException("T and N must be positive,but got: " + T + N);
         }
         this.T = T;
