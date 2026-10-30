@@ -132,7 +132,6 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
             return null;
         }
         root = removeHelper(key, root);
-
         size--;
         return value;
     }
