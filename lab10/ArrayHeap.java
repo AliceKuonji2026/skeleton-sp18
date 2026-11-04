@@ -107,8 +107,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
 
         /* TODO: Your code here. */
         int parent = parentIndex(index);
-        int left = leftIndex(parent), right = rightIndex(parent);
-        int minIdx = min(left, right);
+        int minIdx = min(index,parent);
         if (parent == 0 || min(parent, minIdx) == parent) {
             return;
         }
@@ -180,7 +179,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         }
         T t = getNode(1).myItem;
         swap(1, size);
-        size--;
+        contents[size--] = null;
         if(size>0) { sink(1);}
         return t;
     }
@@ -212,7 +211,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
                 break;
             }
         }
-        if (contents[index].myPriority == priority || index == 0) {
+        if (index ==0 || contents[index].myPriority == priority) {
             return;
         } else if (contents[index].myPriority > priority) {
             contents[index].myPriority = priority;
