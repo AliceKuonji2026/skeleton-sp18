@@ -65,10 +65,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      * invalid because we leave the 0th entry blank.
      */
     private boolean inBounds(int index) {
-        if ((index > size) || (index < 1)) {
-            return false;
-        }
-        return true;
+        return (index <= size) && (index >= 1);
     }
 
     /**
@@ -148,6 +145,9 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         }
 
         /* TODO: Your code here! */
+        Node node = new Node(item,priority);
+        contents[++size] = node;
+        swim(size);
     }
 
     /**
@@ -206,7 +206,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     public void changePriority(T item, double priority) {
         /* TODO: Your code here! */
         int index = 0;
-        for (int i = 1; i < contents.length; i++) {
+        for (int i = 1; i <= size; i++) {
             if (contents[i].myItem.equals(item)) {
                 index = i;
                 break;
@@ -215,8 +215,10 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         if (contents[index].myPriority == priority || index == 0) {
             return;
         } else if (contents[index].myPriority > priority) {
+            contents[index].myPriority = priority;
             swim(index);
         } else {
+            contents[index].myPriority = priority;
             sink(index);
         }
     }
