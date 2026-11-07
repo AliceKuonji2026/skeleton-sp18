@@ -38,4 +38,39 @@ public class TestBoard {
         Board initial = new Board(tiles);
         assertTrue(initial.isGoal());
     }
+
+    @Test
+    public void TestHashCode() {
+        int N=3;
+        int[][] tiles1 = {
+                {1,2,3},
+                {4,5,6},
+                {7,8,9}
+        };
+        Board b1 = new Board(tiles1);
+        int[][] tiles2 = {
+                {1,2,3},
+                {4,5,6},
+                {7,8,9}
+        };
+        Board b2 = new Board(tiles2);
+        assertEquals(b1.hashCode(),b2.hashCode());
+    }
+    @Test
+    public void TeatEquals() {
+        int N=3;
+        int[][] tiles1 = {
+                {1,2,3},
+                {4,5,6},
+                {7,8,9}
+        };
+        Board b1 = new Board(tiles1);
+        int[][] tiles2 = {
+                {1,2,3},
+                {4,5,6},
+                {7,8,9}
+        };
+        Board b2 = new Board(tiles2);
+        assertEquals(b1, b2);
+    }
 } 

@@ -73,10 +73,28 @@ public class Word implements WorldState {
 
     @Override
     public Iterable<WorldState> neighbors() {
+        Set<String> candidates = new HashSet<>();
+        //delete
+        for(int i=0;i<word.length();i++) {
+            candidates.add(word.substring(0,i) + word.substring(i+1));
+        }
+        //insert
+        for(int i=0;i<word.length();i++) {
+            for(char c ='a';c <= 'z';c++) {
+                candidates.add(word.substring(0,i) + c + word.substring(i));
+            }
+        }
+        //substitute
+        for(int i=0;i<word.length();i++) {
+            for(char c = 'a';c<='z';c++) {
+                if(c == word.charAt(i)) continue;
+                candidates.add(word.substring(0,i) + c + word.substring(i+1));
+            }
+        }
         Set<WorldState> neighbors = new HashSet<>();
-        for (String s : words) {
-            if (editDistance(this.word, s) == 1) {
-                neighbors.add(new Word(s, goal));
+        for(String s:candidates) {
+            if(words.contains(s)) {
+                neighbors.add(new Word(s,goal));
             }
         }
         return neighbors;
