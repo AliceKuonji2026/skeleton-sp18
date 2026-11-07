@@ -24,4 +24,18 @@ public class TestBoard {
         x[1][1] = 1000;
         assertEquals("Your Board class is mutable and you should be making a copy of the values in the passed tiles array. Please see the FAQ!", 3, b.tileAt(1, 1));
     }
+
+    @Test
+    public void TestEqual() {
+        int N = 3;
+        int[][] tiles = new int[N][N];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                tiles[i][j] = i*N+j +1 ;
+            }
+        }
+        tiles[N-1][N-1] = 0;
+        Board initial = new Board(tiles);
+        assertTrue(initial.isGoal());
+    }
 } 
