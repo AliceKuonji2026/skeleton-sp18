@@ -1,5 +1,6 @@
-import java.util.List;
-import java.util.Objects;
+import java.io.NotActiveException;
+import java.io.ObjectInputStream;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,28 +17,145 @@ public class Router {
      * Return a List of longs representing the shortest path from the node
      * closest to a start location and the node closest to the destination
      * location.
-     * @param g The graph to use.
-     * @param stlon The longitude of the start location.
-     * @param stlat The latitude of the start location.
+     *
+     * @param g       The graph to use.
+     * @param stlon   The longitude of the start location.
+     * @param stlat   The latitude of the start location.
      * @param destlon The longitude of the destination location.
      * @param destlat The latitude of the destination location.
      * @return A list of node id's in the order visited on the shortest path.
      */
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
-        return null; // FIXME
+        long stId = g.closest(stlon, stlat);
+        long destId = g.closest(destlon, destlat);
+        List<Long> lst = new ArrayList<>();
+        Astar(g, lst, stId, destId);
+        return lst;
     }
+
+    private static void Astar(GraphDB g, List<Long> lst, long stId, long destId) {
+        PriorityQueue<SearchNode> pq = new PriorityQueue<>();
+        Map<Long, SearchNode> map = new HashMap<>();
+        pq.add(new SearchNode(stId, 0, g.distance(stId, destId), stId));
+        while (!pq.isEmpty()) {
+            SearchNode n = pq.remove();
+            long v = n.id;
+            if (map.containsKey(v)) continue;
+            map.put(v, n);
+            if (v == destId) {
+                long tmp = v;
+                lst.add(destId);
+                while (tmp != stId) {
+                    tmp = map.get(tmp).preNodeId;
+                    lst.add(tmp);
+                }
+                Collections.reverse(lst);
+                return;
+            }
+            for (long u : g.adjacent(v)) {
+                if (!map.containsKey(u))
+                    pq.add(new SearchNode(u, n.wayDisToStart + g.distance(v, u), h(g, u, destId), v));
+            }
+        }
+    }
+
+    private static double h(GraphDB g, long id, long destId) {
+        return g.distance(id, destId);
+    }
+
+    private static class SearchNode implements Comparable<SearchNode> {
+        long id;
+        final double wayDisToStart;
+        final double disToDest;
+        final double priority;
+        final long preNodeId;
+
+        public SearchNode(long id, double wayDisToStart, double disToDest, long preNodeId) {
+            this.id = id;
+            this.wayDisToStart = wayDisToStart;
+            this.disToDest = disToDest;
+            this.priority = disToDest + wayDisToStart;
+            this.preNodeId = preNodeId;
+        }
+
+        @Override
+        public int compareTo(SearchNode o) {
+            return Double.compare(this.priority, o.priority);
+        }
+
+    }
+
 
     /**
      * Create the list of directions corresponding to a route on the graph.
-     * @param g The graph to use.
+     *
+     * @param g     The graph to use.
      * @param route The route to translate into directions. Each element
      *              corresponds to a node from the graph in the route.
-     * @return A list of NavigatiionDirection objects corresponding to the input
+     * @return A list of NavigationDirection objects corresponding to the input
      * route.
      */
     public static List<NavigationDirection> routeDirections(GraphDB g, List<Long> route) {
-        return null; // FIXME
+        List<NavigationDirection> lst = new ArrayList<>();
+        if(route.isEmpty() || route.size()<2) return lst;
+
+        // 1. 初始化第一段（起点）
+        String preWayName = g.getEdgeName(route.get(0), route.get(1));
+        double preDistance = g.distance(route.get(0), route.get(1));
+        int preDirection = NavigationDirection.START; // 第一段永远是 Start
+        double prevBearing = g.bearing(route.get(0), route.get(1));
+
+        //2.从第二段开始遍历
+        for(int i = 1;i < route.size() - 1;i++) {
+            long u = route.get(i);
+            long v = route.get(i + 1);
+            double curBearing = g.bearing(u,v);
+            String curWayName = g.getEdgeName(u,v);
+            int curDirection = getDirection(prevBearing,curBearing);
+
+            //判断分段
+            if(curWayName.equals(preWayName)) {
+                preDistance += g.distance(u,v);
+            } else {
+                NavigationDirection navi = new NavigationDirection();
+                navi.way = preWayName;
+                navi.distance = preDistance;
+                navi.direction = preDirection;
+                lst.add(navi);
+
+                preWayName = curWayName;
+                preDistance = g.distance(u,v);
+                preDirection = curDirection;
+            }
+            prevBearing = curBearing;
+        }
+        NavigationDirection lastNavi = new NavigationDirection();
+        lastNavi.way = preWayName;
+        lastNavi.distance = preDistance;
+        lastNavi.direction = preDirection;
+        lst.add(lastNavi);
+
+        return lst;
+    }
+
+    private static int getDirection(double preBearing,double  curBearing) {
+        double deltaBearing = curBearing - preBearing;
+        deltaBearing = (deltaBearing + 540) % 360 - 180;
+        int curDirection = 0;
+        if (Math.abs(deltaBearing) <= 15) {
+            curDirection = NavigationDirection.STRAIGHT;
+        } else if (Math.abs(deltaBearing) <= 30) {
+            if(deltaBearing < 0) curDirection = NavigationDirection.SLIGHT_LEFT;
+            else curDirection = NavigationDirection.SLIGHT_RIGHT;
+        } else if (Math.abs(deltaBearing) <= 100) {
+            if(deltaBearing < 0) curDirection = NavigationDirection.LEFT;
+            else curDirection = NavigationDirection.RIGHT;
+        } else {
+            if(deltaBearing < 0) curDirection = NavigationDirection.SHARP_LEFT;
+            else curDirection = NavigationDirection.SHARP_RIGHT;
+        }
+        return curDirection;
     }
 
 
@@ -47,7 +165,9 @@ public class Router {
      */
     public static class NavigationDirection {
 
-        /** Integer constants representing directions. */
+        /**
+         * Integer constants representing directions.
+         */
         public static final int START = 0;
         public static final int STRAIGHT = 1;
         public static final int SLIGHT_LEFT = 2;
@@ -57,15 +177,21 @@ public class Router {
         public static final int SHARP_LEFT = 6;
         public static final int SHARP_RIGHT = 7;
 
-        /** Number of directions supported. */
+        /**
+         * Number of directions supported.
+         */
         public static final int NUM_DIRECTIONS = 8;
 
-        /** A mapping of integer values to directions.*/
+        /**
+         * A mapping of integer values to directions.
+         */
         public static final String[] DIRECTIONS = new String[NUM_DIRECTIONS];
 
-        /** Default name for an unknown way. */
+        /**
+         * Default name for an unknown way.
+         */
         public static final String UNKNOWN_ROAD = "unknown road";
-        
+
         /** Static initializer. */
         static {
             DIRECTIONS[START] = "Start";
@@ -78,11 +204,17 @@ public class Router {
             DIRECTIONS[SHARP_RIGHT] = "Sharp right";
         }
 
-        /** The direction a given NavigationDirection represents.*/
+        /**
+         * The direction a given NavigationDirection represents.
+         */
         int direction;
-        /** The name of the way I represent. */
+        /**
+         * The name of the way I represent.
+         */
         String way;
-        /** The distance along this way I represent. */
+        /**
+         * The distance along this way I represent.
+         */
         double distance;
 
         /**
@@ -102,6 +234,7 @@ public class Router {
         /**
          * Takes the string representation of a navigation direction and converts it into
          * a Navigation Direction object.
+         *
          * @param dirAsString The string representation of the NavigationDirection.
          * @return A NavigationDirection object representing the input string.
          */
@@ -149,8 +282,8 @@ public class Router {
         public boolean equals(Object o) {
             if (o instanceof NavigationDirection) {
                 return direction == ((NavigationDirection) o).direction
-                    && way.equals(((NavigationDirection) o).way)
-                    && distance == ((NavigationDirection) o).distance;
+                        && way.equals(((NavigationDirection) o).way)
+                        && distance == ((NavigationDirection) o).distance;
             }
             return false;
         }
