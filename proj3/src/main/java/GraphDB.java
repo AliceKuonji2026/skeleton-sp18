@@ -18,10 +18,12 @@ import java.util.*;
  * @author Alan Yao, Josh Hug
  */
 public class GraphDB {
-    /** Your instance variables for storing the graph. You should consider
-     * creating helper classes, e.g. Node, Edge, etc. */
+    /**
+     * Your instance variables for storing the graph. You should consider
+     * creating helper classes, e.g. Node, Edge, etc.
+     */
 
-    private static final Map<String,List<GraphDB.Node>> nodesByName = new HashMap<>();
+    private static final Map<String, List<GraphDB.Node>> nodesByName = new HashMap<>();
 
 
     public static class Node {
@@ -31,44 +33,52 @@ public class GraphDB {
         private String name;
 
 
-        public Node(long id,double lon,double lat) {
+        public Node(long id, double lon, double lat) {
             this.id = id;
             this.lon = lon;
             this.lat = lat;
         }
+
         public String getName() {
             return this.name;
         }
+
         public long getId() {
             return this.id;
         }
+
         public double getLon() {
             return this.lon;
         }
+
         public double getLat() {
             return this.lat;
         }
     }
-    private final Map<Long,Node> nodes = new HashMap<>();
-    private final Map<Long,Node> locations = new LinkedHashMap<>();
-    private final Map<Long,Set<Long>> adj = new HashMap<>();
-    private final Map<String,String> edgeName = new HashMap<>();
 
-    private String uvToStringKey(long u,long v) {
-        return Math.min(u,v) + "," + Math.max(u,v);
-    }
-    public String getEdgeName(long u,long v) {
-        return edgeName.get(uvToStringKey(u,v));
+    private final Map<Long, Node> nodes = new HashMap<>();
+    private final Map<Long, Node> locations = new LinkedHashMap<>();
+    private final Map<Long, Set<Long>> adj = new HashMap<>();
+    private final Map<String, String> edgeName = new HashMap<>();
+
+    private String uvToStringKey(long u, long v) {
+        return Math.min(u, v) + "," + Math.max(u, v);
     }
 
-    public void addNode(long id,double lon,double lat) {
-        nodes.put(id,new Node(id,lon,lat));
-        locations.put(id,new Node(id,lon,lat));
+    public String getEdgeName(long u, long v) {
+        return edgeName.get(uvToStringKey(u, v));
     }
+
+    public void addNode(long id, double lon, double lat) {
+        nodes.put(id, new Node(id, lon, lat));
+        locations.put(id, new Node(id, lon, lat));
+    }
+
     public boolean findNode(long id) {
         return nodes.containsKey(id);
     }
-    public void addNodeName(long nodeId,String name) {
+
+    public void addNodeName(long nodeId, String name) {
         nodes.get(nodeId).name = name;
         locations.get(nodeId).name = name;
     }
@@ -77,18 +87,19 @@ public class GraphDB {
         return Collections.unmodifiableCollection(locations.values());
     }
 
-    public void addEdge(long u,long v,String name) {
-        if(u == v) return;
-        adj.computeIfAbsent(u,k -> new HashSet<>()).add(v);
-        adj.computeIfAbsent(v,k -> new HashSet<>()).add(u);
-        edgeName.put(uvToStringKey(u,v),name);
+    public void addEdge(long u, long v, String name) {
+        if (u == v) return;
+        adj.computeIfAbsent(u, k -> new HashSet<>()).add(v);
+        adj.computeIfAbsent(v, k -> new HashSet<>()).add(u);
+        edgeName.put(uvToStringKey(u, v), name);
     }
 
 
     public static class Way {
         private long id;
         private ArrayList<Long> nodesInTheWay;
-        private HashMap<String,String> attributes;
+        private HashMap<String, String> attributes;
+
         public Way(long id) {
             this.id = id;
             nodesInTheWay = new ArrayList<>();
@@ -97,11 +108,10 @@ public class GraphDB {
     }
 
 
-
-
     /**
      * Example constructor shows how to create and start an XML parser.
      * You do not need to modify this constructor, but you're welcome to do so.
+     *
      * @param dbPath Path to the XML file to be parsed.
      */
     public GraphDB(String dbPath) {
@@ -123,14 +133,15 @@ public class GraphDB {
         for (GraphDB.Node node : nodes) {
             locationTire.insert(node.getName());
 
-            if(node.getName() == null) continue;
+            if (node.getName() == null) continue;
             String clean = GraphDB.cleanString(node.getName());
-            nodesByName.computeIfAbsent(clean,k -> new ArrayList<>()).add(node);
+            nodesByName.computeIfAbsent(clean, k -> new ArrayList<>()).add(node);
         }
     }
 
     /**
      * Helper to process strings into their "cleaned" form, ignoring punctuation and capitalization.
+     *
      * @param s Input string.
      * @return Cleaned string.
      */
@@ -139,21 +150,22 @@ public class GraphDB {
     }
 
     /**
-     *  Remove nodes with no connections from the graph.
-     *  While this does not guarantee that any two nodes in the remaining graph are connected,
-     *  we can reasonably assume this since typically roads are connected.
+     * Remove nodes with no connections from the graph.
+     * While this does not guarantee that any two nodes in the remaining graph are connected,
+     * we can reasonably assume this since typically roads are connected.
      */
     private void clean() {
         // TODO: Your code here.
         ArrayList<Long> lst = new ArrayList<>();
-        for(long id:nodes.keySet()) {
-            if(!adj.containsKey(id)) lst.add(id);
+        for (long id : nodes.keySet()) {
+            if (!adj.containsKey(id)) lst.add(id);
         }
-        for(long id:lst) nodes.remove(id);
+        for (long id : lst) nodes.remove(id);
     }
 
     /**
      * Returns an iterable of all vertex IDs in the graph.
+     *
      * @return An iterable of id's of all vertices in the graph.
      */
     Iterable<Long> vertices() {
@@ -163,6 +175,7 @@ public class GraphDB {
 
     /**
      * Returns ids of all vertices adjacent to v.
+     *
      * @param v The id of the vertex we are looking adjacent to.
      * @return An iterable of the ids of the neighbors of v.
      */
@@ -174,6 +187,7 @@ public class GraphDB {
      * Returns the great-circle distance between vertices v and w in miles.
      * Assumes the lon/lat methods are implemented properly.
      * <a href="https://www.movable-type.co.uk/scripts/latlong.html">Source</a>.
+     *
      * @param v The id of the first vertex.
      * @param w The id of the second vertex.
      * @return The great-circle distance between the two locations from the graph.
@@ -201,6 +215,7 @@ public class GraphDB {
      * end point.
      * Assumes the lon/lat methods are implemented properly.
      * <a href="https://www.movable-type.co.uk/scripts/latlong.html">Source</a>.
+     *
      * @param v The id of the first vertex.
      * @param w The id of the second vertex.
      * @return The initial bearing between the vertices.
@@ -223,16 +238,17 @@ public class GraphDB {
 
     /**
      * Returns the vertex closest to the given longitude and latitude.
+     *
      * @param lon The target longitude.
      * @param lat The target latitude.
      * @return The id of the node in the graph closest to the target.
      */
     long closest(double lon, double lat) {
         long res = -1;
-        for(long id:nodes.keySet()) {
-            if(res == -1) res = id;
-            else{
-                res = distance(lon,lat,lon(id),lat(id)) < distance(lon,lat,lon(res),lat(res)) ? id : res;
+        for (long id : nodes.keySet()) {
+            if (res == -1) res = id;
+            else {
+                res = distance(lon, lat, lon(id), lat(id)) < distance(lon, lat, lon(res), lat(res)) ? id : res;
             }
         }
         return res;
@@ -240,6 +256,7 @@ public class GraphDB {
 
     /**
      * Gets the longitude of a vertex.
+     *
      * @param v The id of the vertex.
      * @return The longitude of the vertex.
      */
@@ -249,6 +266,7 @@ public class GraphDB {
 
     /**
      * Gets the latitude of a vertex.
+     *
      * @param v The id of the vertex.
      * @return The latitude of the vertex.
      */
@@ -259,13 +277,14 @@ public class GraphDB {
     private static class Trie {
         private static class TireNode {
             boolean isWord;
-            String word;
+            Set<String> words;
 
             Map<Character, TireNode> children;
 
             public TireNode() {
                 this.isWord = false;
                 this.children = new HashMap<>();
+                this.words = new HashSet<>();
             }
         }
 
@@ -286,7 +305,7 @@ public class GraphDB {
                 currentNode = currentNode.children.get(c);
             }
             currentNode.isWord = true;
-            currentNode.word = word;
+            currentNode.words.add(word);
         }
 
         public List<String> getMatches(String prefix) {
@@ -299,17 +318,19 @@ public class GraphDB {
                 } else return matches;
             }
             getNodes(curNode, matches);
+            Collections.sort(matches);
             return matches;
         }
 
         private void getNodes(TireNode n, List<String> lst) {
-            if (n.isWord) lst.add(n.word);
+            if (n.isWord) lst.addAll(n.words);
             if (n.children.isEmpty()) return;
             for (TireNode child : n.children.values()) {
                 getNodes(child, lst);
             }
         }
     }
+
     private static final Trie locationTire = new Trie();
 
     public static List<String> getLocationsByPrefix(String prefix) {
@@ -322,13 +343,13 @@ public class GraphDB {
     }
 
     public static List<Map<String, Object>> getLocations(String locationName) {
-        List<Map<String,Object>> locations = new ArrayList<>();
-        for(GraphDB.Node n: nodesByName.get(GraphDB.cleanString(locationName))) {
-            Map<String,Object> map = new HashMap<>();
-            map.put("id",n.getId());
-            map.put("name",n.getName());
-            map.put("lon",n.getLon());
-            map.put("lat",n.getLat());
+        List<Map<String, Object>> locations = new ArrayList<>();
+        for (GraphDB.Node n : nodesByName.get(GraphDB.cleanString(locationName))) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", n.getId());
+            map.put("name", n.getName());
+            map.put("lon", n.getLon());
+            map.put("lat", n.getLat());
             locations.add(map);
         }
         return locations;

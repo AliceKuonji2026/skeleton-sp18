@@ -21,6 +21,7 @@ import static spark.Spark.*;
  * requested images and routes. You should not need to modify this file unless you're
  * doing the Autocomplete part of the project, though you are welcome to do so.
  * This code is using BearMaps skeleton code version 2.0.
+ *
  * @author Alan Yao, Josh Hug
  */
 public class MapServer {
@@ -289,7 +290,7 @@ public class MapServer {
      * In linear time, collect all the names of OSM locations that prefix-match the query string.
      *
      * @param prefix Prefix string to be searched for. Could be any case, with our without
-     * punctuation.
+     *               punctuation.
      * @return A <code>List</code> of the full names of locations whose cleaned name matches the
      * cleaned <code>prefix</code>.
      */
@@ -298,7 +299,6 @@ public class MapServer {
     public static List<String> getLocationsByPrefix(String prefix) {
         return GraphDB.getLocationsByPrefix(prefix);
     }
-
 
 
     /**
