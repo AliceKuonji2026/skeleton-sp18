@@ -27,13 +27,27 @@ public class GraphDB {
         private double lat;
         private String name;
 
+
         public Node(long id,double lon,double lat) {
             this.id = id;
             this.lon = lon;
             this.lat = lat;
         }
+        public String getName() {
+            return this.name;
+        }
+        public long getId() {
+            return this.id;
+        }
+        public double getLon() {
+            return this.lon;
+        }
+        public double getLat() {
+            return this.lat;
+        }
     }
     private final Map<Long,Node> nodes = new HashMap<>();
+    private final Map<Long,Node> locations = new LinkedHashMap<>();
     private final Map<Long,Set<Long>> adj = new HashMap<>();
     private final Map<String,String> edgeName = new HashMap<>();
 
@@ -46,14 +60,20 @@ public class GraphDB {
 
     public void addNode(long id,double lon,double lat) {
         nodes.put(id,new Node(id,lon,lat));
+        locations.put(id,new Node(id,lon,lat));
     }
-
     public boolean findNode(long id) {
         return nodes.containsKey(id);
     }
     public void addNodeName(long nodeId,String name) {
         nodes.get(nodeId).name = name;
+        locations.get(nodeId).name = name;
     }
+
+    public Iterable<Node> getAllLocations() {
+        return Collections.unmodifiableCollection(locations.values());
+    }
+
     public void addEdge(long u,long v,String name) {
         if(u == v) return;
         adj.computeIfAbsent(u,k -> new HashSet<>()).add(v);

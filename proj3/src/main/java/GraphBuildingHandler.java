@@ -42,7 +42,7 @@ public class GraphBuildingHandler extends DefaultHandler {
     private final GraphDB g;
 
     private long curNodeId;
-    private ArrayList<Long> curNodesInWay = new ArrayList<Long>();
+    private final ArrayList<Long> curNodesInWay = new ArrayList<Long>();
     private boolean validWay = false;
     private String curEdgeName = "unknown road";
 
@@ -77,9 +77,9 @@ public class GraphBuildingHandler extends DefaultHandler {
         if (qName.equals("node")) {
             /* We encountered a new <node...> tag. */
             activeState = "node";
-            System.out.println("Node id: " + attributes.getValue("id"));
-            System.out.println("Node lon: " + attributes.getValue("lon"));
-            System.out.println("Node lat: " + attributes.getValue("lat"));
+            //System.out.println("Node id: " + attributes.getValue("id"));
+            //System.out.println("Node lon: " + attributes.getValue("lon"));
+            //System.out.println("Node lat: " + attributes.getValue("lat"));
 
             /* TODO Use the above information to save a "node" to somewhere. */
             /* Hint: A graph-like structure would be nice. */
@@ -117,7 +117,6 @@ public class GraphBuildingHandler extends DefaultHandler {
             if (!g.findNode(nodeId)) return;
             curNodesInWay.add(nodeId);
 
-
         } else if (activeState.equals("way") && qName.equals("tag")) {
             /* While looking at a way, we found a <tag...> tag. */
             String k = attributes.getValue("k");
@@ -145,7 +144,7 @@ public class GraphBuildingHandler extends DefaultHandler {
             node this tag belongs to. Remember XML is parsed top-to-bottom, so probably it's the
             last node that you looked at (check the first if-case). */
             g.addNodeName(curNodeId,attributes.getValue("v"));
-            //System.out.println("Node's name: " + attributes.getValue("v"));
+//            System.out.println("Node's name: " + attributes.getValue("v"));
         }
     }
 

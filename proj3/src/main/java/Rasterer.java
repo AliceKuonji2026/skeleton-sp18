@@ -51,7 +51,7 @@ public class Rasterer {
      * forget to set this to true on success! <br>
      */
     public Map<String, Object> getMapRaster(Map<String, Double> params) {
-        System.out.println(params);
+//        System.out.println(params);
         Map<String, Object> results = new HashMap<>();
         this.ullon = params.get("ullon");
         this.ullat = params.get("ullat");
@@ -79,7 +79,7 @@ public class Rasterer {
     }
 
     private String[][] getRasterGrid(Map<String, Object> results) {
-        System.out.println("minX:" + minX + " | " + "maxX:" + maxX + "\n" + "minY:" + minY + " | " + "maxY:" + maxY);
+//        System.out.println("minX:" + minX + " | " + "maxX:" + maxX + "\n" + "minY:" + minY + " | " + "maxY:" + maxY);
 
         if (maxX < minX) return new String[0][0];
 
