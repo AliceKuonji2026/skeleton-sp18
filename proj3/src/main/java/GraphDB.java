@@ -21,6 +21,9 @@ public class GraphDB {
     /** Your instance variables for storing the graph. You should consider
      * creating helper classes, e.g. Node, Edge, etc. */
 
+    private static final Map<String,List<GraphDB.Node>> nodesByName = new HashMap<>();
+
+
     public static class Node {
         private long id;
         private double lon;
@@ -115,6 +118,15 @@ public class GraphDB {
             e.printStackTrace();
         }
         clean();
+
+        Iterable<GraphDB.Node> nodes = getAllLocations();
+        for (GraphDB.Node node : nodes) {
+            locationTire.insert(node.getName());
+
+            if(node.getName() == null) continue;
+            String clean = GraphDB.cleanString(node.getName());
+            nodesByName.computeIfAbsent(clean,k -> new ArrayList<>()).add(node);
+        }
     }
 
     /**
@@ -242,5 +254,83 @@ public class GraphDB {
      */
     double lat(long v) {
         return nodes.get(v).lat;
+    }
+
+    private static class Trie {
+        private static class TireNode {
+            boolean isWord;
+            String word;
+
+            Map<Character, TireNode> children;
+
+            public TireNode() {
+                this.isWord = false;
+                this.children = new HashMap<>();
+            }
+        }
+
+        private final TireNode root;
+
+        public Trie() {
+            root = new TireNode();
+        }
+
+        public void insert(String word) {
+            if (word == null) return;
+//            System.out.println(word);
+            String lower = GraphDB.cleanString(word);
+            TireNode currentNode = root;
+
+            for (char c : lower.toCharArray()) {
+                currentNode.children.putIfAbsent(c, new TireNode());
+                currentNode = currentNode.children.get(c);
+            }
+            currentNode.isWord = true;
+            currentNode.word = word;
+        }
+
+        public List<String> getMatches(String prefix) {
+            List<String> matches = new ArrayList<>();
+            TireNode curNode = root;
+            prefix = GraphDB.cleanString(prefix);
+            for (char c : prefix.toCharArray()) {
+                if (curNode.children.containsKey(c)) {
+                    curNode = curNode.children.get(c);
+                } else return matches;
+            }
+            getNodes(curNode, matches);
+            return matches;
+        }
+
+        private void getNodes(TireNode n, List<String> lst) {
+            if (n.isWord) lst.add(n.word);
+            if (n.children.isEmpty()) return;
+            for (TireNode child : n.children.values()) {
+                getNodes(child, lst);
+            }
+        }
+    }
+    private static final Trie locationTire = new Trie();
+
+    public static List<String> getLocationsByPrefix(String prefix) {
+        /*Iterable<GraphDB.Node> nodes = graph.getAllLocations();
+        for(GraphDB.Node node:nodes) {
+            if(node.getNodeName() != null) System.out.println(node.getNodeName());
+        }
+        System.out.println(locationTire.getMatches(prefix));*/
+        return locationTire.getMatches(prefix);
+    }
+
+    public static List<Map<String, Object>> getLocations(String locationName) {
+        List<Map<String,Object>> locations = new ArrayList<>();
+        for(GraphDB.Node n: nodesByName.get(GraphDB.cleanString(locationName))) {
+            Map<String,Object> map = new HashMap<>();
+            map.put("id",n.getId());
+            map.put("name",n.getName());
+            map.put("lon",n.getLon());
+            map.put("lat",n.getLat());
+            locations.add(map);
+        }
+        return locations;
     }
 }
