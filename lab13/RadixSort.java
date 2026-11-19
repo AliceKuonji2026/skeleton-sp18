@@ -41,12 +41,12 @@ public class RadixSort {
      */
     private static void sortHelperLSD(String[] asciis, int index) {
         // Optional LSD helper method for required LSD radix sort
-        int[] counts = new int[256];
+        int[] counts = new int[257];
         for (String s : asciis) {
-            char c = (index >= s.length()) ? 0 : s.charAt(index);
-            counts[c]++;
+            int c = (index >= s.length()) ? -1 : s.charAt(index);
+            counts[c + 1]++;
         }
-        int[] starts = new int[256];
+        int[] starts = new int[257];
         int pos = 0;
         for (int i = 0; i < starts.length; i++) {
             starts[i] = pos;
@@ -54,10 +54,10 @@ public class RadixSort {
         }
         String[] res = new String[asciis.length];
         for (String item : asciis) {
-            char c = (index >= item.length()) ? 0 : item.charAt(index);
-            int place = starts[c];
+            int c = (index >= item.length()) ? -1 : item.charAt(index);
+            int place = starts[c + 1];
             res[place] = item;
-            starts[c]++;
+            starts[c + 1]++;
         }
         System.arraycopy(res, 0, asciis, 0, asciis.length);
     }
@@ -75,12 +75,12 @@ public class RadixSort {
     private static void sortHelperMSD(String[] asciis, int start, int end, int index) {
         // Optional MSD helper method for optional MSD radix sort
         if (end - start <= 1) return;
-        int[] counts = new int[256];
+        int[] counts = new int[257];
         for (int i = start; i < end; i++) {
-            char c = index >= asciis[i].length() ? 0 : asciis[i].charAt(index);
-            counts[c]++;
+            int c = index >= asciis[i].length() ? -1 : asciis[i].charAt(index);
+            counts[c + 1]++;
         }
-        int[] starts = new int[256];
+        int[] starts = new int[257];
         int pos = 0;
         for (int i = 0; i < starts.length; i++) {
             starts[i] = pos;
@@ -89,16 +89,16 @@ public class RadixSort {
         String[] res = new String[end - start];
         for (int i = start; i < end; i++) {
             String item = asciis[i];
-            char c = index >= item.length() ? 0 : item.charAt(index);
-            int place = starts[c];
+            int c = index >= item.length() ? -1 : item.charAt(index);
+            int place = starts[c + 1];
             res[place] = item;
-            starts[c]++;
+            starts[c + 1]++;
         }
         System.arraycopy(res, 0, asciis, start, res.length);
 
 
 
-        for (int b = 0; b <= 255; b++) {
+        for (int b = 1; b <= 256; b++) {
             if (counts[b] > 1) {
                 sortHelperMSD(asciis, start + starts[b] - counts[b], start + starts[b], index + 1);
             }
