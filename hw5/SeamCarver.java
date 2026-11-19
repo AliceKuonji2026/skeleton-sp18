@@ -6,12 +6,12 @@ public class SeamCarver {
     private Picture picture;
 
     public SeamCarver(Picture picture) {
-        this.picture = picture;
+        this.picture = new Picture(picture);
     }
 
     public Picture picture() {
         // current picture
-        return picture;
+        return new Picture(picture);
     }
 
     public int width() {
@@ -98,9 +98,10 @@ public class SeamCarver {
 
     public int[] findHorizontalSeam() {
         // sequence of indices for horizontal seam
+        Picture original = picture;
         picture = transpose(picture);
         int[] seam = findVerticalSeam();
-        picture = transpose(picture);
+        picture = original;
         return seam;
 
     }
@@ -118,12 +119,11 @@ public class SeamCarver {
     private static Picture transpose(Picture original) {
         int width = original.width();
         int height = original.height();
-
         Picture transposed = new Picture(height, width);
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                Color c= original.get(x, y);
+                Color c = original.get(x, y);
                 transposed.set(y, x, c);
             }
         }
