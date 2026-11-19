@@ -75,7 +75,7 @@ public class CountingSort {
         }
         int dt = Math.min(min, 0);
 
-        int[] counts = new int[ - min + max + 1];
+        int[] counts = new int[ - dt + max + 1];
         for(int i:arr) {
             counts[i - dt]++;
         }
