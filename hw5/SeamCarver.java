@@ -1,5 +1,7 @@
 import edu.princeton.cs.algs4.Picture;
 
+import java.awt.Color;
+
 public class SeamCarver {
     private Picture picture;
 
@@ -26,17 +28,18 @@ public class SeamCarver {
         // energy of pixel at column x and row y
         int height = picture.height();
         int width = picture.width();
-        int rgbUP = picture.getRGB(x, (y - 1 + height) % height);
-        int rgbBELOW = picture.getRGB(x, (y + 1) % height);
-        int rgbLEFT = picture.getRGB((x - 1 + width) % width, y);
-        int rgbRIGHT = picture.getRGB((x + 1) % width, y);
-        return dt_2(rgbUP, rgbBELOW) + dt_2(rgbLEFT, rgbRIGHT);
+        Color up = picture.get(x, (y - 1 + height) % height);
+        Color below = picture.get(x, (y + 1) % height);
+        Color left = picture.get((x - 1 + width) % width, y);
+        Color right = picture.get((x + 1) % width, y);
+        return dt_2(up, below) + dt_2(left, right);
     }
 
-    private double dt_2(int rgb1, int rgb2) {
-        return (Math.pow(((rgb1 >> 16) & 0xFF) - ((rgb2 >> 16) & 0xFF), 2)
-                + Math.pow(((rgb1 >> 8) & 0xFF) - ((rgb2 >> 8) & 0xFF), 2)
-                + Math.pow((rgb1 & 0xFF) - (rgb2 & 0xFF), 2));
+    private double dt_2(Color a, Color b) {
+        int dr = a.getRed() - b.getRed();
+        int dg = a.getGreen() - b.getGreen();
+        int db = a.getBlue() - b.getBlue();
+        return dr * dr + dg * dg + db * db;
     }
 
     public int[] findVerticalSeam() {
@@ -120,8 +123,8 @@ public class SeamCarver {
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                int rgb = original.getRGB(x, y);
-                transposed.setRGB(y, x, rgb);
+                Color c= original.get(x, y);
+                transposed.set(y, x, c);
             }
         }
 
