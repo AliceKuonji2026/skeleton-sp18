@@ -1,5 +1,4 @@
 import edu.princeton.cs.algs4.Picture;
-
 import java.awt.Color;
 
 public class SeamCarver {
@@ -32,10 +31,10 @@ public class SeamCarver {
         Color below = picture.get(x, (y + 1) % height);
         Color left = picture.get((x - 1 + width) % width, y);
         Color right = picture.get((x + 1) % width, y);
-        return dt_2(up, below) + dt_2(left, right);
+        return dt2(up, below) + dt2(left, right);
     }
 
-    private double dt_2(Color a, Color b) {
+    private double dt2(Color a, Color b) {
         int dr = a.getRed() - b.getRed();
         int dg = a.getGreen() - b.getGreen();
         int db = a.getBlue() - b.getBlue();
@@ -46,14 +45,18 @@ public class SeamCarver {
         // sequence of indices for vertical seam
         double[][] energies = getAllEnergy(picture);
         double[][] bestToXY = new double[width()][height()];
-        for (int x = 0; x < width(); x++) {
-            for (int y = 0; y < height(); y++) {
+        for (int y = 0; y < height(); y++) {
+            for (int x = 0; x < width(); x++) {
                 if (y == 0) {
                     bestToXY[x][y] = energies[x][y];
                 } else {
                     double min = bestToXY[x][y - 1];
-                    if (x > 0) min = Math.min(min, bestToXY[x - 1][y - 1]);
-                    if (x < width() - 1) min = Math.min(min, bestToXY[x + 1][y - 1]);
+                    if (x > 0) {
+                        min = Math.min(min, bestToXY[x - 1][y - 1]);
+                    }
+                    if (x < width() - 1) {
+                        min = Math.min(min, bestToXY[x + 1][y - 1]);
+                    }
                     bestToXY[x][y] = min + energies[x][y];
                 }
             }
