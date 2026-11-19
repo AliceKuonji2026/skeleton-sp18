@@ -93,13 +93,14 @@ public class RadixSort {
             char c = index >= item.length() ? 0 : item.charAt(index);
             int place = starts[c];
             res[place] = item;
+            starts[c]++;
         }
         System.arraycopy(res, 0, asciis, start, res.length);
 
 
         for (int b = 0; b <= 255; b++) {
             if (counts[b] > 1) {
-                sortHelperMSD(asciis, start + starts[b], start + starts[b] + counts[b], index + 1);
+                sortHelperMSD(asciis, start + starts[b] - counts[b], start + starts[b], index + 1);
             }
         }
     }
