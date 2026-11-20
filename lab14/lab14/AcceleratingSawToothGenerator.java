@@ -1,10 +1,8 @@
 package lab14;
 
-import lab14lib.Generator;
-
-public class AcceleratingSawTooth extends SawToothGenerator {
+public class AcceleratingSawToothGenerator extends SawToothGenerator {
     double k;
-    public AcceleratingSawTooth(int period,double k) {
+    public AcceleratingSawToothGenerator(int period,double k) {
         super(period);
         this.k = k;
     }
