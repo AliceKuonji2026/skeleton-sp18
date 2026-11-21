@@ -47,7 +47,7 @@ public class Boggle {
 
         height = lines.length;
         width = lines[0].length();
-        char[][] board = new char[width][height];
+        char[][] board = new char[height][width];
 
         for (int i = 0; i < height; i++) {
             if (lines[i].length() != width) {
@@ -56,12 +56,12 @@ public class Boggle {
             board[i] = lines[i].toLowerCase().toCharArray();
         }
 
-        boolean[][] visited = new boolean[width][height];
+        boolean[][] visited = new boolean[height][width];
         HashSet<String> found = new HashSet<>();
         List<Character> firstChars = trie.getFirstChars();
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                char c = board[x][y];
+                char c = board[y][x];
                 if (firstChars.contains(c)) {
                     dfs(board, x, y, trie.getFirstNode(c),visited,found);
                 }
@@ -78,24 +78,20 @@ public class Boggle {
     }
 
     private static void dfs(char[][] board, int x, int y, Trie.Node n, boolean[][] visited, HashSet<String> found) {
-        if(visited[x][y]) { return;}
+        if(visited[y][x]) { return;}
         if (n.isWord() && n.getWord().length() > 2) {
             found.add(n.getWord());
         }
-        boolean[][] vst = new boolean[width][height];
-        for (int i = 0; i < visited.length; i++) {
-            vst[i] = visited[i].clone();
-        }
-        vst[x][y] = true;
+        visited[y][x] = true;
         Set<Character> nextChars = n.getNextChars();
         List<int[]> neighbors = getNeighbors(x, y);
         for (int[] p : neighbors) {
-            char c = board[p[0]][p[1]];
+            char c = board[p[1]][p[0]];
             if (nextChars.contains(c)) {
-                dfs(board, p[0], p[1], n.getNextNode(c), vst, found);
+                dfs(board, p[0], p[1], n.getNextNode(c), visited, found);
             }
         }
-
+        visited[y][x] = false;
     }
 
     private static List<int[]> getNeighbors(int x, int y) {
