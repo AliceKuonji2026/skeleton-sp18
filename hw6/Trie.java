@@ -45,11 +45,10 @@ public class Trie {
         return null;
     }
 
-    public void insert(String original) {
-        if (original == null || original.isEmpty() || original.toCharArray()[0] == '\n') {
+    public void insert(String word) {
+        if (word == null || word.isEmpty() || word.toCharArray()[0] == '\n') {
             return;
         }
-        String word = original.toLowerCase();
         Node currentNode = root;
         for (char c : word.toCharArray()) {
             if (!currentNode.next.containsKey(c)) {
@@ -58,7 +57,7 @@ public class Trie {
             currentNode = currentNode.next.get(c);
         }
         currentNode.isWord = true;
-        currentNode.word = original;
+        currentNode.word = word;
     }
 
     public boolean findWord(String original) {

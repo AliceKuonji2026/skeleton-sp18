@@ -1,4 +1,7 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Boggle {
 
@@ -34,7 +37,7 @@ public class Boggle {
      */
     public static List<String> solve(int k, String boardFilePath) {
         // YOUR CODE HERE
-        if(k <= 0) {
+        if (k <= 0) {
             throw new IllegalArgumentException("k is non-positive.");
         }
         if (boardFilePath == null || boardFilePath.isEmpty()) {
@@ -62,22 +65,25 @@ public class Boggle {
             for (int x = 0; x < width; x++) {
                 char c = board[y][x];
                 if (firstChars.contains(c)) {
-                    dfs(board, x, y, trie.getFirstNode(c),visited,found);
+                    dfs(board, x, y, trie.getFirstNode(c), visited, found);
                 }
             }
         }
         List<String> res = new ArrayList<>(found);
-        res.sort((a,b) -> {
-            if(a.length() != b.length()) {
-                return Integer.compare(b.length(),a.length());
+        res.sort((a, b) -> {
+            if (a.length() != b.length()) {
+                return Integer.compare(b.length(), a.length());
             }
             return a.compareTo(b);
         });
         return new ArrayList<>(res.subList(0, Math.min(k, res.size())));
     }
 
-    private static void dfs(char[][] board, int x, int y, Trie.Node n, boolean[][] visited, HashSet<String> found) {
-        if(visited[y][x]) { return;}
+    private static void dfs(char[][] board, int x, int y, Trie.Node n,
+                            boolean[][] visited, HashSet<String> found) {
+        if (visited[y][x]) {
+            return;
+        }
         if (n.isWord() && n.getWord().length() > 2) {
             found.add(n.getWord());
         }
