@@ -13,17 +13,13 @@ public class Boggle {
     private static void buildTrie() {
         trie = new Trie();
         if (dictPath == null || dictPath.isEmpty()) {
-            return;
+            throw new IllegalArgumentException("The dictionary file does not exist.");
         }
         In in = new In(dictPath);
-        while (true) {
-            String word = in.readLine();
-            if (!in.isEmpty()) {
-                trie.insert(word);
-            } else {
-                break;
-            }
+        for (String word : in.readAllStrings()) {
+            trie.insert(word);
         }
+        in.close();
     }
 
     /**
@@ -38,6 +34,9 @@ public class Boggle {
      */
     public static List<String> solve(int k, String boardFilePath) {
         // YOUR CODE HERE
+        if(k <= 0) {
+            throw new IllegalArgumentException("k is non-positive.");
+        }
         if (boardFilePath == null || boardFilePath.isEmpty()) {
             return null;
         }
@@ -51,7 +50,7 @@ public class Boggle {
 
         for (int i = 0; i < height; i++) {
             if (lines[i].length() != width) {
-                throw new IllegalArgumentException("Board is not rectangular");
+                throw new IllegalArgumentException("Board is not rectangular.");
             }
             board[i] = lines[i].toLowerCase().toCharArray();
         }
@@ -84,26 +83,19 @@ public class Boggle {
         }
         visited[y][x] = true;
         Set<Character> nextChars = n.getNextChars();
-        List<int[]> neighbors = getNeighbors(x, y);
-        for (int[] p : neighbors) {
-            char c = board[p[1]][p[0]];
-            if (nextChars.contains(c)) {
-                dfs(board, p[0], p[1], n.getNextNode(c), visited, found);
+        for (int i = 0; i < 8; i++) {
+            int nx = x + DX[i];
+            int ny = y + DY[i];
+            if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+                char c = board[ny][nx];
+                Trie.Node next = n.getNextNode(c);
+                if (next != null) {
+                    dfs(board, nx, ny, next, visited, found);
+                }
             }
         }
         visited[y][x] = false;
     }
 
-    private static List<int[]> getNeighbors(int x, int y) {
-        List<int[]> res = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
-            int nx = x + DX[i];
-            int ny = y + DY[i];
-            if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
-                res.add(new int[]{nx, ny});
-            }
-        }
-        return res;
-    }
 
 }

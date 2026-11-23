@@ -5,7 +5,7 @@ public class testBoggleSolver {
 
     }
     public void main() {
-        String boardFilePath = "smallBoard2.txt";
+        String boardFilePath = "smallBoard.txt";
         int k = 7;
         List<String> res = Boggle.solve(k,boardFilePath);
         System.out.println(res);

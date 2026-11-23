@@ -29,8 +29,7 @@ public class Trie {
         }
 
         public Node getNextNode(Character c) {
-            if(this.next.containsKey(c)) { return next.get(c);}
-            return null;
+            return next.get(c);
         }
     }
 
