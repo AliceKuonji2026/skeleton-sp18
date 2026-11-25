@@ -10,7 +10,7 @@ public class HuffmanDecoder {
             bs = bs.allButFirstNBits(m.getSequence().length());
             sBuilder.append(m.getSymbol());
         }
-        FileUtils.writeCharArray(fileName.substring(0, fileName.length() - 4),
+        FileUtils.writeCharArray(args[1],
                 sBuilder.toString().toCharArray());
     }
 }
