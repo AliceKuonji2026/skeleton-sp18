@@ -1,5 +1,3 @@
-import java.util.Map;
-
 public class HuffmanDecoder {
     public static void main(String[] args) {
         String fileName = args[0];
@@ -12,6 +10,7 @@ public class HuffmanDecoder {
             bs = bs.allButFirstNBits(m.getSequence().length());
             sBuilder.append(m.getSymbol());
         }
-        FileUtils.writeCharArray("test-" + fileName.substring(0, fileName.length() - 4), sBuilder.toString().toCharArray());
+        FileUtils.writeCharArray(fileName.substring(0, fileName.length() - 4),
+                sBuilder.toString().toCharArray());
     }
 }
